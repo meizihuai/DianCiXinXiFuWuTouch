@@ -1,0 +1,734 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BF5DE102-AF36-4873-B58F-16E68B898595}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>电磁信息云服务触屏版.My.MyApplication</StartupObject>
+    <RootNamespace>电磁信息云服务触屏版</RootNamespace>
+    <AssemblyName>电磁信息云服务触屏版</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>电磁信息云服务触屏版.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>电磁信息云服务触屏版.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocX, Version=1.0.0.19, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\DocX.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.0.4.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="interop.speechlib">
+      <HintPath>D:\dlls\interop.speechlib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\dlls\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Speech" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="UserPanels\BusFreqGis.Designer.vb">
+      <DependentUpon>BusFreqGis.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\BusFreqGis.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Class\MZHelper.vb" />
+    <Compile Include="Class\NormalResponse.vb" />
+    <Compile Include="EditLog.Designer.vb">
+      <DependentUpon>EditLog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="EditLog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HandleJob.Designer.vb">
+      <DependentUpon>HandleJob.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HandleJob.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HisFreqGis.Designer.vb">
+      <DependentUpon>HisFreqGis.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HisFreqGis.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MiniUserPanel\CtlTaskInfo.Designer.vb">
+      <DependentUpon>CtlTaskInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MiniUserPanel\CtlTaskInfo.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ModGis.vb" />
+    <Compile Include="NewTaskCtl\CNTFreqBscan.Designer.vb">
+      <DependentUpon>CNTFreqBscan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTFreqBscan.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTHeiGuangBo.Designer.vb">
+      <DependentUpon>CNTHeiGuangBo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTHeiGuangBo.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTKeyong.Designer.vb">
+      <DependentUpon>CNTKeyong.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTKeyong.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTWeiZhang.Designer.vb">
+      <DependentUpon>CNTWeiZhang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTWeiZhang.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTZhanyong.Designer.vb">
+      <DependentUpon>CNTZhanyong.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NewTaskCtl\CNTZhanyong.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NewTaskCtl\PNTDeviceLog.Designer.vb">
+      <DependentUpon>PNTDeviceLog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NewTaskCtl\PNTDeviceLog.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\AllDeviceList.Designer.vb">
+      <DependentUpon>AllDeviceList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\AllDeviceList.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\Allwarns.Designer.vb">
+      <DependentUpon>Allwarns.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\Allwarns.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\DeviceSetting.Designer.vb">
+      <DependentUpon>DeviceSetting.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\DeviceSetting.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\freqTaskPanel.Designer.vb">
+      <DependentUpon>freqTaskPanel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\freqTaskPanel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\INGDeviceList.Designer.vb">
+      <DependentUpon>INGDeviceList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\INGDeviceList.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\LogPanel.Designer.vb">
+      <DependentUpon>LogPanel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\LogPanel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\OtherSystemDevice.Designer.vb">
+      <DependentUpon>OtherSystemDevice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\OtherSystemDevice.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\SignalTaskPanel.Designer.vb">
+      <DependentUpon>SignalTaskPanel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\SignalTaskPanel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\TSSGateWayListPanel.Designer.vb">
+      <DependentUpon>TSSGateWayListPanel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\TSSGateWayListPanel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\usrManager.Designer.vb">
+      <DependentUpon>usrManager.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\usrManager.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OtherCTL\WarnsPanel.Designer.vb">
+      <DependentUpon>WarnsPanel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OtherCTL\WarnsPanel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SelectAllDeviceID.Designer.vb">
+      <DependentUpon>SelectAllDeviceID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SelectAllDeviceID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectTaskNickName.Designer.vb">
+      <DependentUpon>SelectTaskNickName.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SelectTaskNickName.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqAudio.Designer.vb">
+      <DependentUpon>PNTFreqAudio.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqAudio.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqBscan.Designer.vb">
+      <DependentUpon>PNTFreqBscan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqBscan.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqBuhuo.Designer.vb">
+      <DependentUpon>PNTFreqBuhuo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqBuhuo.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqMidScan.Designer.vb">
+      <DependentUpon>PNTFreqMidScan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqMidScan.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqPointScan.Designer.vb">
+      <DependentUpon>PNTFreqPointScan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqPointScan.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqSetting.Designer.vb">
+      <DependentUpon>PNTFreqSetting.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TSSPanel\PNTFreqSetting.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SelectDeviceFrm.Designer.vb">
+      <DependentUpon>SelectDeviceFrm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SelectDeviceFrm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StuCLass\DeviceStu.vb" />
+    <Compile Include="MiniUserPanel\CtlDevice.Designer.vb">
+      <DependentUpon>CtlDevice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MiniUserPanel\CtlDevice.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQBuhuo.Designer.vb">
+      <DependentUpon>PNTZBQBuhuo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQBuhuo.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQFreqBscan.Designer.vb">
+      <DependentUpon>PNTZBQFreqBscan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQFreqBscan.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQJiandu.Designer.vb">
+      <DependentUpon>PNTZBQJiandu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQJiandu.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQPointScan.Designer.vb">
+      <DependentUpon>PNTZBQPointScan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQPointScan.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQSetting.Designer.vb">
+      <DependentUpon>PNTZBQSetting.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TZBQPanel\PNTZBQSetting.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TZBQPanel\SignalBiaoPanel.Designer.vb">
+      <DependentUpon>SignalBiaoPanel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TZBQPanel\SignalBiaoPanel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\BusHisFreqGis.Designer.vb">
+      <DependentUpon>BusHisFreqGis.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\BusHisFreqGis.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CTLBusSystem.Designer.vb">
+      <DependentUpon>CTLBusSystem.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CTLBusSystem.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CTLDataService.Designer.vb">
+      <DependentUpon>CTLDataService.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CTLDataService.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CtlDeviceSetting.Designer.vb">
+      <DependentUpon>CtlDeviceSetting.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlDeviceSetting.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CtlDuty.Designer.vb">
+      <DependentUpon>CtlDuty.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlDuty.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CtlHistoryTask.Designer.vb">
+      <DependentUpon>CtlHistoryTask.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlHistoryTask.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IpSettingFrm.Designer.vb">
+      <DependentUpon>IpSettingFrm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="IpSettingFrm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Module1.vb" />
+    <Compile Include="Module2.vb" />
+    <Compile Include="registerfrm.Designer.vb">
+      <DependentUpon>registerfrm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="registerfrm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CTLInfoService.Designer.vb">
+      <DependentUpon>CTLInfoService.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CTLInfoService.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CtlMain.Designer.vb">
+      <DependentUpon>CtlMain.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlMain.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FrmMain.Designer.vb">
+      <DependentUpon>FrmMain.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmMain.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="loginfrm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="loginfrm.Designer.vb">
+      <DependentUpon>loginfrm.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="UserPanels\CtlNewTask.Designer.vb">
+      <DependentUpon>CtlNewTask.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlNewTask.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CtlOnlineTask.Designer.vb">
+      <DependentUpon>CtlOnlineTask.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlOnlineTask.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CtlOnlineTZBQ.Designer.vb">
+      <DependentUpon>CtlOnlineTZBQ.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlOnlineTZBQ.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CtlTaskManager.Designer.vb">
+      <DependentUpon>CtlTaskManager.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlTaskManager.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\CtlOnlineTSS.Designer.vb">
+      <DependentUpon>CtlOnlineTSS.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\CtlOnlineTSS.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\HistoryAudio.designer.vb">
+      <DependentUpon>HistoryAudio.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\HistoryAudio.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\HistoryExcel.designer.vb">
+      <DependentUpon>HistoryExcel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\HistoryExcel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\HistoryImg.designer.vb">
+      <DependentUpon>HistoryImg.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\HistoryImg.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\HistoryWord.designer.vb">
+      <DependentUpon>HistoryWord.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\HistoryWord.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WarnBox.Designer.vb">
+      <DependentUpon>WarnBox.vb</DependentUpon>
+    </Compile>
+    <Compile Include="WarnBox.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WarnSelect.Designer.vb">
+      <DependentUpon>WarnSelect.vb</DependentUpon>
+    </Compile>
+    <Compile Include="WarnSelect.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UserPanels\BusFreqGis.resx">
+      <DependentUpon>BusFreqGis.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditLog.resx">
+      <DependentUpon>EditLog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HandleJob.resx">
+      <DependentUpon>HandleJob.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HisFreqGis.resx">
+      <DependentUpon>HisFreqGis.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MiniUserPanel\CtlDevice.resx">
+      <DependentUpon>CtlDevice.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MiniUserPanel\CtlTaskInfo.resx">
+      <DependentUpon>CtlTaskInfo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTaskCtl\CNTFreqBscan.resx">
+      <DependentUpon>CNTFreqBscan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTaskCtl\CNTHeiGuangBo.resx">
+      <DependentUpon>CNTHeiGuangBo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTaskCtl\CNTKeyong.resx">
+      <DependentUpon>CNTKeyong.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTaskCtl\CNTWeiZhang.resx">
+      <DependentUpon>CNTWeiZhang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTaskCtl\CNTZhanyong.resx">
+      <DependentUpon>CNTZhanyong.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTaskCtl\PNTDeviceLog.resx">
+      <DependentUpon>PNTDeviceLog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\AllDeviceList.resx">
+      <DependentUpon>AllDeviceList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\Allwarns.resx">
+      <DependentUpon>Allwarns.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\DeviceSetting.resx">
+      <DependentUpon>DeviceSetting.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\freqTaskPanel.resx">
+      <DependentUpon>freqTaskPanel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\INGDeviceList.resx">
+      <DependentUpon>INGDeviceList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\LogPanel.resx">
+      <DependentUpon>LogPanel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\OtherSystemDevice.resx">
+      <DependentUpon>OtherSystemDevice.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\SignalTaskPanel.resx">
+      <DependentUpon>SignalTaskPanel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\TSSGateWayListPanel.resx">
+      <DependentUpon>TSSGateWayListPanel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\usrManager.resx">
+      <DependentUpon>usrManager.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OtherCTL\WarnsPanel.resx">
+      <DependentUpon>WarnsPanel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectAllDeviceID.resx">
+      <DependentUpon>SelectAllDeviceID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectTaskNickName.resx">
+      <DependentUpon>SelectTaskNickName.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TSSPanel\PNTFreqAudio.resx">
+      <DependentUpon>PNTFreqAudio.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TSSPanel\PNTFreqBscan.resx">
+      <DependentUpon>PNTFreqBscan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TSSPanel\PNTFreqBuhuo.resx">
+      <DependentUpon>PNTFreqBuhuo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TSSPanel\PNTFreqMidScan.resx">
+      <DependentUpon>PNTFreqMidScan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TSSPanel\PNTFreqPointScan.resx">
+      <DependentUpon>PNTFreqPointScan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TSSPanel\PNTFreqSetting.resx">
+      <DependentUpon>PNTFreqSetting.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectDeviceFrm.resx">
+      <DependentUpon>SelectDeviceFrm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TZBQPanel\PNTZBQBuhuo.resx">
+      <DependentUpon>PNTZBQBuhuo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TZBQPanel\PNTZBQFreqBscan.resx">
+      <DependentUpon>PNTZBQFreqBscan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TZBQPanel\PNTZBQJiandu.resx">
+      <DependentUpon>PNTZBQJiandu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TZBQPanel\PNTZBQPointScan.resx">
+      <DependentUpon>PNTZBQPointScan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TZBQPanel\PNTZBQSetting.resx">
+      <DependentUpon>PNTZBQSetting.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TZBQPanel\SignalBiaoPanel.resx">
+      <DependentUpon>SignalBiaoPanel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\BusHisFreqGis.resx">
+      <DependentUpon>BusHisFreqGis.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CTLBusSystem.resx">
+      <DependentUpon>CTLBusSystem.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CTLDataService.resx">
+      <DependentUpon>CTLDataService.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlDeviceSetting.resx">
+      <DependentUpon>CtlDeviceSetting.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlDuty.resx">
+      <DependentUpon>CtlDuty.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlHistoryTask.resx">
+      <DependentUpon>CtlHistoryTask.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IpSettingFrm.resx">
+      <DependentUpon>IpSettingFrm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="registerfrm.resx">
+      <DependentUpon>registerfrm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CTLInfoService.resx">
+      <DependentUpon>CTLInfoService.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlMain.resx">
+      <DependentUpon>CtlMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMain.resx">
+      <DependentUpon>FrmMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="loginfrm.resx">
+      <DependentUpon>loginfrm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlNewTask.resx">
+      <DependentUpon>CtlNewTask.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlOnlineTask.resx">
+      <DependentUpon>CtlOnlineTask.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlOnlineTZBQ.resx">
+      <DependentUpon>CtlOnlineTZBQ.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlTaskManager.resx">
+      <DependentUpon>CtlTaskManager.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\CtlOnlineTSS.resx">
+      <DependentUpon>CtlOnlineTSS.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\HistoryAudio.resx">
+      <DependentUpon>HistoryAudio.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\HistoryExcel.resx">
+      <DependentUpon>HistoryExcel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\HistoryImg.resx">
+      <DependentUpon>HistoryImg.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\HistoryWord.resx">
+      <DependentUpon>HistoryWord.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WarnBox.resx">
+      <DependentUpon>WarnBox.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WarnSelect.resx">
+      <DependentUpon>WarnSelect.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\返回键.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\返回键1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\返回键3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\一般告警.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\一般告警.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qq %283%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\搜索.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\邮箱.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\告警待处理.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\微信.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\更新.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="logo.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
