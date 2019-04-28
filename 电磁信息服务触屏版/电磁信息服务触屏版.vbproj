@@ -62,7 +62,7 @@
       <HintPath>D:\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="interop.speechlib">
-      <HintPath>D:\dlls\interop.speechlib.dll</HintPath>
+      <HintPath>..\..\..\..\dll\Interop.SpeechLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -95,12 +95,9 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UserPanels\BusFreqGis.Designer.vb">
-      <DependentUpon>BusFreqGis.vb</DependentUpon>
-    </Compile>
-    <Compile Include="UserPanels\BusFreqGis.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Class\json_PPSJ.vb" />
+    <Compile Include="Class\LisanInfo.vb" />
+    <Compile Include="Class\TekBusDeviceInfo.vb" />
     <Compile Include="Class\MZHelper.vb" />
     <Compile Include="Class\NormalResponse.vb" />
     <Compile Include="EditLog.Designer.vb">
@@ -327,10 +324,16 @@
     <Compile Include="TZBQPanel\SignalBiaoPanel.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserPanels\BusHisFreqGis.Designer.vb">
-      <DependentUpon>BusHisFreqGis.vb</DependentUpon>
+    <Compile Include="UserPanels\BusFreqGis.designer.vb">
+      <DependentUpon>BusFreqGis.vb</DependentUpon>
     </Compile>
-    <Compile Include="UserPanels\BusHisFreqGis.vb">
+    <Compile Include="UserPanels\BusFreqGis.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanels\BusHisFreqGis..designer.vb">
+      <DependentUpon>BusHisFreqGis..vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanels\BusHisFreqGis..vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UserPanels\CTLBusSystem.Designer.vb">
@@ -485,9 +488,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UserPanels\BusFreqGis.resx">
-      <DependentUpon>BusFreqGis.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="EditLog.resx">
       <DependentUpon>EditLog.vb</DependentUpon>
     </EmbeddedResource>
@@ -599,8 +599,11 @@
     <EmbeddedResource Include="TZBQPanel\SignalBiaoPanel.resx">
       <DependentUpon>SignalBiaoPanel.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserPanels\BusHisFreqGis.resx">
-      <DependentUpon>BusHisFreqGis.vb</DependentUpon>
+    <EmbeddedResource Include="UserPanels\BusFreqGis.resx">
+      <DependentUpon>BusFreqGis.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanels\BusHisFreqGis..resx">
+      <DependentUpon>BusHisFreqGis..vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserPanels\CTLBusSystem.resx">
       <DependentUpon>CTLBusSystem.vb</DependentUpon>

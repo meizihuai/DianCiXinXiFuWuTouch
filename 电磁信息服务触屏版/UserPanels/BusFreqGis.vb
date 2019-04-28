@@ -24,16 +24,37 @@ Public Class BusFreqGis
     Private BusLineList As List(Of BusLine)
     Private selectBusLine As BusLine
     Private BusIco As String = "http://123.207.31.37:8082/bmapico/bus.png"
+    Private dik As New Dictionary(Of String, String) 'Tek设备和网
+    Private flagShowAllLine As Boolean = False
+    Private showAllLineThread As Thread
+    Private Sub BusFreqGis_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
+        If IsNothing(showAllLineThread) = False Then
+            Try
+                showAllLineThread.Abort()
+            Catch ex As Exception
 
+            End Try
+        End If
+    End Sub
     Private Sub BusFreqGis_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Me.Dock = DockStyle.Fill
+        Me.DoubleBuffered = True
         Label2.Enabled = False
         WebGis.ObjectForScripting = Me
+        Panel9.ForeColor = Color.White
+        LinkLabel1.LinkColor = Color.White
+        dik.Add("Tek180508", "DSG-GW0101")
+        dik.Add("Tek180509", "DSG-GW0102")
+        dik.Add("Tek180510", "DSG-GW0103")
+        dik.Add("Tek180511", "DSG-GW0100")
         ini()
         iniChart1()
         If isLoadGis Then
+            flagShowAllLine = CheckBox2.Checked
             WebGis.Navigate(gisurl)
         Else
+            CheckBox2.Enabled = False
+            flagShowAllLine = False
             GetBusDeviceList()
         End If
     End Sub
@@ -113,6 +134,122 @@ Public Class BusFreqGis
         Series.Name = "MoudleFreq"
         Chart1.Series.Add(Series) '3
     End Sub
+    Private Sub CheckBox2_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox2.CheckedChanged
+        flagShowAllLine = CheckBox2.Checked
+        If flagShowAllLine = False Then
+            CleanGis(WebGis)
+            If IsNothing(showAllLineThread) = False Then
+                Try
+                    showAllLineThread.Abort()
+                Catch ex As Exception
+
+                End Try
+            End If
+        End If
+    End Sub
+
+    Private Sub ShowAllLine()
+        If flagShowAllLine = False Then Return
+        If IsNothing(showAllLineThread) = False Then
+            Try
+                showAllLineThread.Abort()
+            Catch ex As Exception
+
+            End Try
+        End If
+        showAllLineThread = New Thread(AddressOf GetAllLineInfoLoop)
+        showAllLineThread.Start()
+    End Sub
+    Private Sub GetAllLineInfoLoop()
+        Dim oldTekBusDeviceInfo As TekBusDeviceInfo() = Nothing
+        While True
+            Try
+                Dim isLockGisView As Boolean = CheckBox1.Checked
+                Dim np As normalResponse = GetServerNp("func=GetTekBusAllInfo")
+                If np.result Then
+                    Dim str As String = np.data.ToString
+                    Dim TekBusDevices() As TekBusDeviceInfo = JsonConvert.DeserializeObject(str, GetType(TekBusDeviceInfo()))
+                    If IsNothing(TekBusDevices) = False Then
+                        If IsNothing(oldTekBusDeviceInfo) Then
+                            For i = 0 To TekBusDevices.Count - 1
+                                Dim itm As TekBusDeviceInfo = TekBusDevices(i)
+                                Dim jsNameTmp As String = "addFreqGisPoint"
+                                Dim oinfo As String = itm.TekDeviceId & "," & itm.gpsTime
+                                itm.oldPointInfo = oinfo
+                                Dim lng As Double = 0
+                                Dim lat As Double = 0
+                                If itm.HkCoordinfo.x > 0 And itm.HkCoordinfo.y > 0 Then
+                                    lng = itm.HkCoordinfo.x
+                                    lat = itm.HkCoordinfo.y
+                                End If
+                                If itm.GwCoordinfo.x > 0 And itm.GwCoordinfo.y > 0 Then
+                                    lng = itm.GwCoordinfo.x
+                                    lat = itm.GwCoordinfo.y
+                                End If
+                                If itm.TekCoordinfo.x > 0 And itm.TekCoordinfo.y > 0 Then
+                                    lng = itm.TekCoordinfo.x
+                                    lat = itm.TekCoordinfo.y
+                                End If
+                                itm.lng = lng
+                                itm.lat = lat
+                                TekBusDevices(i) = itm
+                                If lng = 0 Or lat = 0 Then Continue For
+                                Dim objTmp() As Object = New Object() {lng, lat, oinfo, True, Not isLockGisView, 14, lng, lat, False, "blue", itm.lineId, "", 10, 0.5}
+                                script(jsNameTmp, objTmp, WebGis)
+                            Next
+                            oldTekBusDeviceInfo = TekBusDevices
+                        Else
+                            For i = 0 To TekBusDevices.Count - 1
+                                Dim itm As TekBusDeviceInfo = TekBusDevices(i)
+                                Dim jsNameTmp As String = "addFreqGisPoint"
+                                Dim oinfo As String = itm.TekDeviceId & "," & itm.gpsTime
+                                Dim tmpOldInfo As String = oldTekBusDeviceInfo(i).oldPointInfo
+                                itm.oldPointInfo = oinfo
+                                Dim lng As Double = 0
+                                Dim lat As Double = 0
+                                If itm.HkCoordinfo.x > 0 And itm.HkCoordinfo.y > 0 Then
+                                    lng = itm.HkCoordinfo.x
+                                    lat = itm.HkCoordinfo.y
+                                End If
+                                If itm.GwCoordinfo.x > 0 And itm.GwCoordinfo.y > 0 Then
+                                    lng = itm.GwCoordinfo.x
+                                    lat = itm.GwCoordinfo.y
+                                End If
+                                If itm.TekCoordinfo.x > 0 And itm.TekCoordinfo.y > 0 Then
+                                    lng = itm.TekCoordinfo.x
+                                    lat = itm.TekCoordinfo.y
+                                End If
+                                itm.lng = lng
+                                itm.lat = lat
+
+                                TekBusDevices(i) = itm
+                                Dim oldTmpLng As Double = oldTekBusDeviceInfo(i).lng
+                                Dim oldTmpLat As Double = oldTekBusDeviceInfo(i).lat
+                                If oldTmpLng = 0 Or oldTmpLat = 0 Then
+                                    oldTmpLng = lng
+                                    oldTmpLat = lat
+                                End If
+                                If tmpOldInfo <> "" Then
+                                    Dim jsName2 As String = "deletePoint"
+                                    Dim obj2 As Object() = New Object() {tmpOldInfo}
+                                    script(jsName2, obj2, WebGis)
+                                End If
+                                If lng > 0 And lat > 0 Then
+                                    Dim objTmp() As Object = New Object() {lng, lat, oinfo, True, Not isLockGisView, 14, oldTmpLng, oldTmpLat, True, "blue", itm.lineId, "", 10, 0.5}
+                                    script(jsNameTmp, objTmp, WebGis)
+                                End If
+
+                            Next
+                            oldTekBusDeviceInfo = TekBusDevices
+                        End If
+                    End If
+                End If
+            Catch ex As Exception
+
+            End Try
+            Sleep(16 * 1000)
+        End While
+    End Sub
     Private Sub GetBusDeviceList()
         Dim th As New Thread(AddressOf th_GetBusDeviceList)
         th.Start()
@@ -178,12 +315,38 @@ Public Class BusFreqGis
     End Sub
     Private Sub WebGis_DocumentCompleted(ByVal sender As System.Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles WebGis.DocumentCompleted
         GetBusDeviceList()
+        ShowAllLine()
     End Sub
 
     Private Sub PictureBox3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox3.Click
         GetBusDeviceList()
     End Sub
-
+    'Private Function GetlocationByGateWay(deviceId As String) As runLocation
+    '    ' http://123.207.31.37:8080/?func=GetGateWayLocation&deviceId=DSG-GW0100&token=928453310
+    '    If dik.ContainsKey(deviceId) = False Then Return Nothing
+    '    Dim dsgGateWayDeviceId As String = dik(deviceId)
+    '    Dim np As normalResponse = GetServerNp("func=GetGateWayLocation&deviceId=" & dsgGateWayDeviceId)
+    '    If np.result Then
+    '        If IsNothing(np.data) Then Return Nothing
+    '        Dim dataStr As String = np.data.ToString
+    '        Console.WriteLine("GateWay DeivceId=" & dsgGateWayDeviceId & ",经纬度:" & dataStr)
+    '        If dataStr = "" Then Return Nothing
+    '        If dataStr.Contains(",") = False Then Return Nothing
+    '        Dim st() As String = dataStr.Split(",")
+    '        If st.Length <> 2 Then Return Nothing
+    '        Dim lng As String = st(0)
+    '        Dim lat As String = st(1)
+    '        If IsNumeric(lng) = False Then Return Nothing
+    '        If IsNumeric(lat) = False Then Return Nothing
+    '        If lng = 0 Or lat = 0 Then Return Nothing
+    '        lbl_Lng.Text = lng
+    '        lbl_Lat.Text = lat
+    '        Dim dateNow As Date = Now
+    '        lbl_Time.Text = dateNow.ToString("yyyy-MM-dd HH:mm:ss")
+    '        '   Return Nothing
+    '        HandleFreqGis(lng, lat, dateNow.ToString("yyyy-MM-dd HH:mm:ss"), True)
+    '    End If
+    'End Function
     Private Sub 选择该条线路ToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles 选择该条线路ToolStripMenuItem.Click
         If LVDetail.Items.Count = 0 Then Return
         If LVDetail.SelectedIndices.Count = 0 Then Return
@@ -199,9 +362,15 @@ Public Class BusFreqGis
         selectLineId = bus.lineId
         lbl_LineName.Text = bus.lineName
         lbl_DeviceName.Text = bus.deviceName
-        lbl_Lng.Text = bus.lng
-        lbl_Lat.Text = bus.lat
-        lbl_Time.Text = bus.time
+        If bus.lng <> "" And bus.lat <> "" Then
+            If IsNumeric(bus.lng) And IsNumeric(bus.lat) Then
+                If bus.lng > 0 And bus.lat > 0 Then
+                    lbl_Lng.Text = bus.lng
+                    lbl_Lat.Text = bus.lat
+                    lbl_Time.Text = bus.time
+                End If
+            End If
+        End If
         If IsNothing(ReciveDevMsgThread) = False Then
             Try
                 ReciveDevMsgThread.Abort()
@@ -209,6 +378,8 @@ Public Class BusFreqGis
 
             End Try
         End If
+        OldLng = 0
+        OldLat = 0
         CleanGis(WebGis)
         ReciveDevMsgThread = New Thread(AddressOf ReviceDevMsg)
         ReciveDevMsgThread.Start()
@@ -225,9 +396,12 @@ Public Class BusFreqGis
         Console.WriteLine("HttpMsgUrl=" & HttpMsgUrl)
         While True
             Dim result As String = GetHttpMsg()
+            '  GetlocationByGateWay(selectDeviceId)
             If result = "" Then Continue While
             HandleHttpMsg(result)
+
         End While
+
     End Sub
     Private Function GetHttpMsg() As String
         Try
@@ -250,22 +424,7 @@ Public Class BusFreqGis
             '  MsgBox(ex.ToString)
         End Try
     End Function
-    Structure runLocation
-        Dim lng As String
-        Dim lat As String
-        Dim time As String
-    End Structure
-    Structure json_PPSJ
-        Dim freqStart As Double
-        Dim freqStep As Double
-        Dim freqEnd As Double
-        Dim deviceID As String
-        Dim dataCount As Integer
-        Dim runLocation As runLocation
-        Dim value() As Double
-        Dim isDSGFreq As Boolean
-        Dim DSGFreqBase64 As String
-    End Structure
+
     Private Sub HandleHttpMsg(ByVal HttpMsg As String)
         Console.WriteLine("收到新消息TSS  " & Now.ToString("HH:mm:ss"))
         Dim PPSJList As New List(Of json_PPSJ)
@@ -295,11 +454,9 @@ Public Class BusFreqGis
             Thread_PPSJ = New Thread(AddressOf HandlePPSJList)
             Thread_PPSJ.Start(PPSJList)
         End If
-
     End Sub
     Dim DisPlayLock As Object
     Private Sub HandlePPSJList(ByVal Plist As List(Of json_PPSJ))
-
         If IsNothing(Plist) Then Exit Sub
         If Plist.Count = 0 Then Exit Sub
         If IsNothing(DisPlayLock) Then DisPlayLock = New Object
@@ -309,11 +466,11 @@ Public Class BusFreqGis
             For i = 0 To Plist.Count - 1
                 Try
                     Dim itm As json_PPSJ = Plist(i)
-                    Console.WriteLine(itm.runLocation.lng & "," & itm.runLocation.lat)
+                    If IsNothing(itm.runLocation) = False Then Console.WriteLine(itm.runLocation.lng & "," & itm.runLocation.lat)
                     Console.WriteLine(itm.freqStart & "," & itm.freqStep & "," & itm.dataCount)
                     Me.Invoke(Sub() handlePinPuFenXi(itm))
                 Catch ex As Exception
-
+                    MsgBox(ex.ToString)
                 End Try
                 If i <> count - 1 Then
                     Sleep(sleepCount)
@@ -324,12 +481,13 @@ Public Class BusFreqGis
     Private OldLng As Single
     Private OldLat As Single
     Dim oldPointInfo As String = ""
-    Private Sub HandleFreqGis(ByVal lng As Single, ByVal lat As Single, ByVal time As String)
+    Private Sub HandleFreqGis(ByVal lng As Single, ByVal lat As Single, ByVal time As String, isGateWayLocation As Boolean, lineId As String, TekDeviceId As String)
         'AddPoint(lng, lat, "", WebGis)
         'setGisCenter(lng, lat, WebGis)
+        If isGateWayLocation = True Then Return
+        If lng = 0 Or lat = 0 Then Return
         Dim isLockGisView As Boolean = CheckBox1.Checked
         Dim coordes As String = ""
-        Dim wdpoints As CoordInfo()
 
         If OldLng = 0 Or OldLat = 0 Then
             OldLng = lng
@@ -339,7 +497,7 @@ Public Class BusFreqGis
             'script(jsOrder, New String() {OldLng, OldLat, 18}, WebGis)
 
             Dim jsNameTmp As String = "addFreqGisPoint"
-            Dim objTmp() As Object = New Object() {lng, lat, time, True, Not isLockGisView, 14, OldLng, OldLat, False, "blue", selectLineId, "", 10, 0.5}
+            Dim objTmp() As Object = New Object() {lng, lat, time, True, Not isLockGisView, 14, OldLng, OldLat, False, "blue", lineId, "", 10, 0.5}
             script(jsNameTmp, objTmp, WebGis)
             oldPointInfo = time
             'coordes = lng & "," & lat
@@ -355,7 +513,7 @@ Public Class BusFreqGis
         End If
 
         Dim jsName As String = "addFreqGisPoint"
-        Dim obj() As Object = New Object() {lng, lat, time, True, Not isLockGisView, 14, OldLng, OldLat, True, "blue", selectLineId, "", 10, 0.5}
+        Dim obj() As Object = New Object() {lng, lat, time, True, Not isLockGisView, 14, OldLng, OldLat, True, "blue", lineId, "", 10, 0.5}
         script(jsName, obj, WebGis)
         If oldPointInfo = "" Then
             oldPointInfo = time
@@ -404,6 +562,17 @@ Public Class BusFreqGis
         Dim freqStart As Double = p.freqStart
         Dim freqStep As Double = p.freqStep
         Dim yy() As Double = p.value
+        Dim strTmp As String = ""
+        If IsNothing(p.grid) = False Then
+            lbl_grid.Text = p.grid.id
+            Me.Invoke(Sub()
+
+                          lbl_cm.Text = p.grid.cm & " " & CI2EnbIdCellId(p.grid.cm)
+                          lbl_cu.Text = p.grid.cu & " " & CI2EnbIdCellId(p.grid.cu)
+                          lbl_ct.Text = p.grid.ct & " " & CI2EnbIdCellId(p.grid.ct)
+                      End Sub)
+
+        End If
         Dim isDSGFreq As Boolean = False
         If p.isDSGFreq Then
             isDSGFreq = True
@@ -419,8 +588,7 @@ Public Class BusFreqGis
             lbl_Lng.Text = lng
             lbl_Lat.Text = lat
             lbl_Time.Text = time
-            HandleFreqGis(lng, lat, time)
-
+            HandleFreqGis(lng, lat, "选中线路 " & p.deviceID & " " & time, False, selectLineId, selectDeviceId)
         End If
         Dim dataCount As Integer = yy.Count
         Dim deviceID As String = p.deviceID
@@ -640,5 +808,9 @@ Public Class BusFreqGis
 
     Private Sub BusFreqGis_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         Panel7.Height = Me.Height * 0.2
+    End Sub
+
+    Private Sub LVDetail_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LVDetail.SelectedIndexChanged
+
     End Sub
 End Class

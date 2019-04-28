@@ -11,7 +11,7 @@ Imports Newtonsoft
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Module Module1
-    Public Version As String = "1.0.4"
+    Public Version As String = "1.0.5"
     Public exeName As String = "电磁信息云服务触屏版.exe"
     Public selectedDeviceStu As DeviceStu
     Public alldevlist As List(Of deviceStu)

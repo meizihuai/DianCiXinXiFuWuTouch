@@ -47,6 +47,7 @@ Public Class HisFreqGis
     End Sub
     Private Sub HisFreqGis_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.TopMost = True
+        Me.DoubleBuffered = True
         Button2.Enabled = False
         Me.Left = FrmMain.Left + FrmMain.Width / 2 - Me.Width / 2
         Me.Top = FrmMain.Top + FrmMain.Height / 2 - Me.Height / 2

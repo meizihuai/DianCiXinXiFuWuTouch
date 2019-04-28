@@ -16,6 +16,8 @@ Imports SpeechLib
 Imports System.Media
 Imports OfficeOpenXml
 Public Class BusHisFreqGis
+    Private oldSigNalList As List(Of LisanPointInfo)
+    Private sigNalWatchStartTime As Date
     Private HttpMsgUrl As String
     Private selectDeviceId As String
     Private selectLineId As String
@@ -33,8 +35,12 @@ Public Class BusHisFreqGis
 
     End Sub
 
-    Private Sub BusHisFreqGis_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub BusHisFreqGis_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Me.Dock = DockStyle.Fill
+        Me.DoubleBuffered = True
+        GroupBox1.ForeColor = Color.White
+        LinkLabel1.LinkColor = Color.White
+        GroupBox2.ForeColor = Color.White
         Label2.Visible = False
         Label2.ForeColor = Color.White
         WebGis.ObjectForScripting = Me
@@ -43,14 +49,15 @@ Public Class BusHisFreqGis
         ini()
         CheckBox1.Checked = True
         iniChart1()
+        IniLv()
         'TxtStartTime.Text = Now.AddDays(-1).ToString("yyyy-MM-dd 00:00:00")
         'TxtEndTime.Text = Now.AddDays(1).ToString("yyyy-MM-dd 00:00:00")
         ' TxtStartTime.Text = "2018-11-19 00:00:00"
         DTP.MinDate = "2018-11-10"
         Dim dtmp As Date = Now
         DTP.MaxDate = dtmp.ToString("yyyy-MM-dd 23:59:59")
-        DTP.Value = dtmp.ToString("yyyy-MM-dd 00:00:00")
-        DTP.Value = dtmp.ToString("2018-11-19 00:00:00")
+        DTP.Value = dtmp.AddDays(-1).ToString("yyyy-MM-dd 00:00:00")
+        '  DTP.Value = dtmp.ToString("2018-11-19 00:00:00")
         If isLoadGis Then
             WebGis.Navigate(gisurl)
             'Dim path As String = "file:///C:/Users/meizi/Desktop/BmapHTML/Baidumap.html"
@@ -58,7 +65,30 @@ Public Class BusHisFreqGis
         Else
             GetBusDeviceList()
         End If
+
         'AddHandler WebGis.Document.Window.Error, AddressOf Window_Error
+    End Sub
+    Private Sub IniLv()
+        LVSignal.View = View.Details
+        LVSignal.GridLines = False
+        LVSignal.FullRowSelect = True
+        LVSignal.Columns.Add("序号", 50)
+        LVSignal.Columns.Add("时间", 130)
+        LVSignal.Columns.Add("频率(MHz)", 70)
+        LVSignal.Columns.Add("地点", 80)
+        LVSignal.Columns.Add("信号属性", 80)
+        LVSignal.Columns.Add("状态属性", 80)
+        LVSignal.Columns.Add("可用评估", 80)
+        LVSignal.Columns.Add("信号电平", 100)
+        LVSignal.Columns.Add("最小值")
+        LVSignal.Columns.Add("最大值")
+        LVSignal.Columns.Add("出现次数")
+        LVSignal.Columns.Add("平均值")
+        LVSignal.Columns.Add("统计时长")
+        LVSignal.Columns.Add("占用度")
+        LVSignal.Columns.Add("监测次数")
+        LVSignal.Columns.Add("超标次数")
+        LVSignal.Columns.Add("占用度直方图", 600)
     End Sub
     Private Sub Window_Error(ByVal sender As Object, ByVal e As HtmlElementErrorEventArgs)
         Try
@@ -89,8 +119,8 @@ Public Class BusHisFreqGis
         Chart1.Series.Clear()
         'Chart1.ChartAreas(0).CursorX.IsUserEnabled = True
         'Chart1.ChartAreas(0).CursorY.IsUserEnabled = True
-        Chart1.ChartAreas(0).AxisY.Maximum = -20
-        Chart1.ChartAreas(0).AxisY.Minimum = -120
+        Chart1.ChartAreas(0).AxisY.Maximum = -40
+        Chart1.ChartAreas(0).AxisY.Minimum = -100
         Chart1.ChartAreas(0).AxisX.LabelStyle.IsStaggered = False
         Chart1.ChartAreas(0).AxisY.Interval = 20
         'Chart1.ChartAreas(0).AxisX.Maximum = 0
@@ -261,6 +291,7 @@ Public Class BusHisFreqGis
     End Sub
     Private Sub GetBusHisFreqList()
         isShowFreq = RDFreq.Checked
+        oldSigNalList = Nothing
         iniChart1()
         If isShowFreq = False Then
             Chart1.ChartAreas(0).AxisX.Enabled = AxisEnabled.False
@@ -286,8 +317,8 @@ Public Class BusHisFreqGis
         Else
             Chart1.ChartAreas(0).AxisX.Enabled = AxisEnabled.True
         End If
-        Dim th As New Thread(AddressOf ThGetBusHisFreqList)
-        th.Start()
+        ReciveDevMsgThread = New Thread(AddressOf ThGetBusHisFreqList)
+        ReciveDevMsgThread.Start()
     End Sub
     Structure HaiLiangPointInfo
         Dim x As Double
@@ -323,9 +354,16 @@ Public Class BusHisFreqGis
                 MsgBox("结束时间格式不正确")
             End Try
             Dim param As String = "func=GetBusHisFreqList&startTime=" & startTime & "&endTime=" & endTime & "&lineId=" & selectLineId
+            If CheckBox2.Checked Then
+                Dim txt As String = txtCount.Text
+                If IsNumeric(txt) Then
+                    Dim count As Long = Val(txt)
+                    param = param & "&count=" & count
+                End If
+            End If
             Dim result As String = GetH(ServerUrl, param & "&token=" & token)
             Label6.Text = "历史频谱地图"
-            Dim np As NormalResponse = JsonConvert.DeserializeObject(result, GetType(NormalResponse))
+            Dim np As normalResponse = JsonConvert.DeserializeObject(result, GetType(normalResponse))
             If np.result = False Then
                 MsgBox(np.msg)
                 Return
@@ -475,26 +513,11 @@ Public Class BusHisFreqGis
             '  MsgBox(ex.ToString)
         End Try
     End Sub
-    Structure runLocation
-        Dim lng As String
-        Dim lat As String
-        Dim time As String
-    End Structure
-    Structure json_PPSJ
-        Dim freqStart As Double
-        Dim freqStep As Double
-        Dim freqEnd As Double
-        Dim deviceID As String
-        Dim dataCount As Integer
-        Dim runLocation As runLocation
-        Dim value() As Double
-        Dim isDSGFreq As Boolean
-        Dim DSGFreqBase64 As String
-    End Structure
+
     Private Sub GetBusHisFreqData(ByVal msgid As String, ByVal time As String, index As Integer, sumCount As Integer, lng As Double, lat As Double)
         If msgid = "" Then Return
         If IsNumeric(msgid) = False Then Return
-        Dim np As NormalResponse = GetServerNp("func=GetBusHisFreqData&msgid=" & msgid)
+        Dim np As normalResponse = GetServerNp("func=GetBusHisFreqData&msgid=" & msgid)
         If np.result Then
             Dim msg As String = np.data.ToString
             Dim ppsj As json_PPSJ = JsonConvert.DeserializeObject(msg, GetType(json_PPSJ))
@@ -534,6 +557,16 @@ Public Class BusHisFreqGis
         If IsNothing(yy) Then
             Exit Sub
         End If
+        'If Date.Parse(p.runLocation.time) > Date.Parse("2019-04-22 15:14:00") Then
+        '    Dim tmp As String = jstmp
+        '    Console.WriteLine(tmp)
+        'End If
+        If IsNothing(p.grid) = False Then
+            lbl_grid.Text = p.grid.id
+            lbl_cm.Text = p.grid.cm & " " & CI2EnbIdCellId(p.grid.cm)
+            lbl_cu.Text = p.grid.cu & " " & CI2EnbIdCellId(p.grid.cu)
+            lbl_ct.Text = p.grid.ct & " " & CI2EnbIdCellId(p.grid.ct)
+        End If
         Dim runLocationTime As String = ""
         Dim lngTmp As Double
         Dim latTmp As Double
@@ -546,6 +579,7 @@ Public Class BusHisFreqGis
             lbl_Lng.Text = lngTmp
             lbl_Lat.Text = latTmp
             lbl_Time.Text = time
+
         End If
         Dim dataCount As Integer = yy.Count
         Dim deviceID As String = p.deviceID
@@ -639,6 +673,42 @@ Public Class BusHisFreqGis
             str = str & "  <" & jslenstr & ">"
         End If
         Label4.Text = str
+
+        Dim list As List(Of LisanPointInfo) = SignalHelper.GetSigNals(xx, yy, 3, 5)
+        Dim wts As String = "00:00:00"
+        If IsNothing(oldSigNalList) Then
+            oldSigNalList = list
+            Date.TryParse(runLocationTime, sigNalWatchStartTime)
+        Else
+            list = SignalHelper.JionSigNalList(oldSigNalList, list)
+            oldSigNalList = list
+            Dim nTime As Date = sigNalWatchStartTime
+            Date.TryParse(runLocationTime, nTime)
+            Dim ts As TimeSpan = nTime - sigNalWatchStartTime
+            wts = $"{ts.Hours.ToString("00")}:{ts.Minutes.ToString("00")}:{ts.Seconds.ToString("00")}"
+        End If
+        Dim lvItms As ListViewItem() = SignalHelper.TolistViewItems(list, runLocationTime, wts, "东莞市")
+        LVSignal.Items.Clear()
+        LVSignal.Items.AddRange(lvItms)
+        Chart1.Series(4).Points.Clear()
+        For Each p In oldSigNalList
+            Dim index As Integer = -1
+            For j = 0 To xx.Count - 1
+                If (Math.Round(xx(j), 2).ToString()) = p.freq.ToString Then
+                    index = j
+                    Exit For
+                End If
+            Next
+            For m = index - p.sigNalHalfWidth To index + p.sigNalHalfWidth
+                If m >= 0 And m <= xx.Count - 1 Then
+                    Dim value As Double = yy(m)
+                    Me.Invoke(Sub()
+                                  Chart1.Series(4).Points.AddXY(xx(m), value)
+                              End Sub)
+                End If
+
+            Next
+        Next
     End Sub
     Private Sub ShowSigNal(ByVal freqStart As Double, ByVal jieshu As Double, ByVal xx() As Double, ByVal yy() As Double, ByVal isDSGFreq As Boolean, ByVal jslenstr As String, ByVal runLocationTime As String, ponintIndex As Integer, sumCount As Integer, lng As Double, lat As Double, time As String)
 
@@ -830,10 +900,14 @@ Public Class BusHisFreqGis
 
     Private Sub WebGis_DocumentCompleted(ByVal sender As System.Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles WebGis.DocumentCompleted
         GetBusDeviceList()
+
     End Sub
 
     Private Sub 选择该条线路ToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles 选择该条线路ToolStripMenuItem.Click
-
+        If LVDetail.Items.Count = 0 Then Return
+        If LVDetail.SelectedIndices.Count = 0 Then Return
+        Dim index As Integer = LVDetail.SelectedIndices(0)
+        SelectLine(index)
     End Sub
 
     Private Sub PictureBox3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox3.Click
@@ -855,8 +929,94 @@ Public Class BusHisFreqGis
         PanelSignal.Visible = RDSignal.Checked
     End Sub
 
-    Private Sub BusHisFreqGis_Resize(sender As Object, e As EventArgs) Handles MyBase.Resize
+    Private Sub BusHisFreqGis_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         Panel7.Height = Me.Height * 0.2
     End Sub
 
+    Private Sub RDFreq_CheckedChanged(sender As Object, e As EventArgs) Handles RDFreq.CheckedChanged
+        Dim bool As Boolean = RDFreq.Checked
+        Panel11.Visible = bool
+        LVSignal.Visible = bool
+        'If bool Then
+        '    Panel7.Height = 273
+        'Else
+        '    Panel7.Height = 273 + 196
+        'End If
+    End Sub
+
+    Private Sub PictureBox5_Click(sender As Object, e As EventArgs) Handles PictureBox5.Click
+        Dim list As New List(Of ListViewItem)
+        For Each itm In LVSignal.Items
+            list.Add(itm)
+        Next
+        Dim excel As New ExcelPackage
+        Dim exSheet As ExcelWorksheet = excel.Workbook.Worksheets.Add("信号表")
+        Dim colCount As Integer = LVSignal.Columns.Count
+        For i = 0 To colCount - 1
+            exSheet.Cells(1, i + 1).Value = LVSignal.Columns(i).Text
+        Next
+        For i = 0 To list.Count - 1
+            Dim itm As ListViewItem = list(i)
+            For j = 0 To colCount - 1
+                exSheet.Cells(i + 2, j + 1).Value = itm.SubItems(j).Text
+            Next
+        Next
+        Dim SFD As New SaveFileDialog
+        SFD.Filter = "*.xlsx|*.xlsx"
+        Dim result = SFD.ShowDialog
+        If result = DialogResult.OK Or result = DialogResult.Yes Then
+            Dim path As String = SFD.FileName
+            If File.Exists(path) Then File.Delete(path)
+            excel.SaveAs(New FileInfo(path))
+            MsgBox("已导出为Excel文件")
+        End If
+    End Sub
+
+    Private Sub PictureBox2_Click(sender As Object, e As EventArgs) Handles PictureBox2.Click
+        Dim list As New List(Of ListViewItem)
+        For Each itm In LVSignal.Items
+            list.Add(itm)
+        Next
+        Dim colCount As Integer = LVSignal.Columns.Count
+        Dim SFD As New SaveFileDialog
+        SFD.Filter = "*.docx|*.docx"
+        Dim result = SFD.ShowDialog
+        If result = DialogResult.OK Or result = DialogResult.Yes Then
+            Dim path As String = SFD.FileName
+            If File.Exists(path) Then File.Delete(path)
+            Dim doc As Novacode.DocX = Novacode.DocX.Create(path)
+
+            Dim startTime As String = list(0).SubItems(6).Text
+            Dim endTime As String = list(0).SubItems(7).Text
+            doc.InsertParagraph.AppendLine(" ● 信号信息统计表[" & startTime & " To " & endTime & "]").Font(New FontFamily("宋体")).FontSize(15)
+            Dim tab As Novacode.Table = doc.AddTable(list.Count + 1, colCount - 2)
+            tab.Design = Novacode.TableDesign.TableGrid
+            tab.Alignment = Novacode.Alignment.center
+            For i = 0 To colCount - 3
+                tab.Rows(0).Cells(i).FillColor = Color.FromArgb(226, 226, 226)
+            Next
+            For i = 0 To 5
+                Dim cName As String = LVSignal.Columns(i).Text
+                tab.Rows(0).Cells(i).Paragraphs(0).Append(cName).Bold().FontSize(7)
+            Next
+            For i = 6 To colCount - 3
+                Dim cName As String = LVSignal.Columns(i + 2).Text
+                tab.Rows(0).Cells(i).Paragraphs(0).Append(cName).Bold().FontSize(7)
+            Next
+            For i = 0 To list.Count - 1
+                Dim itm As ListViewItem = list(i)
+                For j = 0 To 5
+                    Dim cValue As String = itm.SubItems(j).Text
+                    tab.Rows(i + 1).Cells(j).Paragraphs(0).Append(cValue).FontSize(7)
+                Next
+                For j = 6 To colCount - 3
+                    Dim cValue As String = itm.SubItems(j + 2).Text
+                    tab.Rows(i + 1).Cells(j).Paragraphs(0).Append(cValue).FontSize(7)
+                Next
+            Next
+            doc.InsertParagraph.InsertTableAfterSelf(tab)
+            doc.Save()
+            MsgBox("已导出为Word文件")
+        End If
+    End Sub
 End Class
